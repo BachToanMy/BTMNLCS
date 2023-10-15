@@ -1,0 +1,70 @@
+.nav{
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+
+}
+.header{
+    -fx-background-color: black;
+    -fx-font-family: "Bodoni MT Poster Compressed";
+    -fx-font-size: 50px;
+}
+.navbtn{
+    -fx-border-radius: 10px;
+    -fx-background-color: white;
+    -fx-text-style:bold;
+    -fx-border-color: transparent;
+    -fx-border-width: 1px;
+    -fx-text-fill: black;
+    -fx-font-size: 18px;
+    -fx-font-family: "Bodoni MT";
+}
+.dashboarchart{
+    -fx-background-color: white;
+}
+.shadow{
+    -fx-effect:dropshadow(three-pass-box,rgba(0,0,0,0.5),5,0,0,0) ;
+}
+
+.report{
+    -fx-border-color: black;
+}
+.table-view{
+    -fx-background-color: transparent;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1.5px;
+    -fx-border-color: #6c6b6b
+}
+.table-view .column-header-background{
+    -fx-background-color: #595959;
+    -fx-background-radius: 5px 5px 0 0 ;
+    -fx-background-insets: 0 0 0 0;
+}
+.table-view .column-header, .filter{
+    -fx-background-color: transparent;
+    -fx-size:40px ;
+}
+.table-view .column-header .label{
+    -fx-text-fill: #fff;
+    -fx-font-size: 15px;
+    -fx-font-family: "Bodoni MT";
+}
+.field{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 0.5px 0;
+    -fx-font-size: 16px;
+}
+.btn{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-cell-size: 115px 42px;
+    -fx-font-family: "Bodoni MT";
+    -fx-font-size: 14px;
+}
+.btn:hover{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}
+.anchor{
+    -fx-alignment: center;
+}

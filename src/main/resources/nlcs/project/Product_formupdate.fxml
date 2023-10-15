@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="Product_form" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="454.0" prefWidth="887.0" stylesheets="@CSS/CategoryForm.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nlcs.project.Controller.ProductFormController">
+    <children>
+        <Label fx:id="Proform_label" alignment="CENTER" layoutX="220.0" prefHeight="32.0" prefWidth="292.0" styleClass="labelform" text="UPDATE PRODUCT" AnchorPane.leftAnchor="220.0" AnchorPane.rightAnchor="220.0">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+        <TextField fx:id="Proform_id" layoutX="73.0" layoutY="116.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
+        <TextField fx:id="Proform_name" layoutX="73.0" layoutY="192.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
+        <Label layoutX="66.0" layoutY="92.0" styleClass="label1" text="ID" />
+        <Label layoutX="66.0" layoutY="170.0" styleClass="label1" text="Name" />
+        <TextField fx:id="Proform_note" layoutX="345.0" layoutY="342.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
+        <Label layoutX="338.0" layoutY="322.0" styleClass="label1" text="Note" />
+        <Button fx:id="Proform_submit2" layoutX="416.0" layoutY="411.0" mnemonicParsing="false" onAction="#Submitupdate" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Submit" />
+        <Button fx:id="Proform_cancel" layoutX="321.0" layoutY="410.0" mnemonicParsing="false" onAction="#Cancel" prefHeight="26.0" prefWidth="55.0" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Cancel" />
+        <Button fx:id="Proform_clear" layoutX="510.0" layoutY="410.0" mnemonicParsing="false" onAction="#Clear" prefHeight="26.0" prefWidth="55.0" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Clear" />
+        <ComboBox fx:id="Proform_brand" layoutX="85.0" layoutY="268.0" prefHeight="35.0" prefWidth="224.0" promptText="Choose brand" />
+        <Label layoutX="66.0" layoutY="244.0" styleClass="label1" text="Brand" />
+        <ComboBox fx:id="Proform_category" layoutX="85.0" layoutY="346.0" prefHeight="35.0" prefWidth="224.0" promptText="Choose category" />
+        <Label layoutX="66.0" layoutY="322.0" styleClass="label1" text="Category" />
+        <TextField fx:id="Proform_pricein" layoutX="345.0" layoutY="116.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
+        <Label layoutX="338.0" layoutY="92.0" styleClass="label1" text="Price in" />
+        <TextField fx:id="Proform_stock" layoutX="345.0" layoutY="268.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
+        <Label layoutX="338.0" layoutY="244.0" styleClass="label1" text="Stock" />
+        <TextField fx:id="Proform_priceout" layoutX="345.0" layoutY="194.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
+        <Label layoutX="338.0" layoutY="170.0" styleClass="label1" text="Price out" />
+        <AnchorPane layoutX="627.0" layoutY="115.0" prefHeight="213.0" prefWidth="200.0">
+            <styleClass>
+                <String fx:value="bg" />
+                <String fx:value="shadow" />
+                <String fx:value="radius" />
+            </styleClass>
+            <children>
+                <ImageView fx:id="Proform_image" fitHeight="214.0" fitWidth="200.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </AnchorPane>
+        <Button fx:id="Proform_upload" layoutX="665.0" layoutY="342.0" mnemonicParsing="false" onAction="#Upload_image" prefHeight="31.0" prefWidth="124.0" styleClass="btn" text="Upload" />
+    </children>
+</AnchorPane>

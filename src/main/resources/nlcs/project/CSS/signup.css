@@ -1,0 +1,26 @@
+.bg{
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-radius: 20px;
+    -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 1), 500, 0, 0, 0);
+}
+.label{
+    -fx-font-family: "Bodoni MT Condensed";
+    -fx-font-size: 50px;
+    -fx-font-style: Italic;
+}
+.field{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 0.5px 0;
+}
+.btn{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-cell-size: 115px 42px;
+    -fx-font-family: "Bodoni MT";
+}
+.btn:hover{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}

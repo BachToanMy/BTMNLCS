@@ -1,0 +1,34 @@
+.labelform{
+    -fx-font-family: "Bodoni MT Condensed";
+    -fx-font-size: 40px;
+    -fx-font-style: Italic;
+}
+.field{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 0.5px 0;
+    -fx-font-family: "Bodoni MT";
+}
+.btn{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-cell-size: 115px 42px;
+    -fx-font-family: "Bodoni MT";
+}
+.btn:hover{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}
+.label1{
+    -fx-font-family: "Bodoni MT";
+    -fx-font-size: 18px;
+}
+.radius{
+    -fx-background-radius: 10px;
+}
+.bg{
+    -fx-background-color: white;
+}
+.shadow{
+    -fx-effect:dropshadow(three-pass-box,rgba(0,0,0,0.5),5,0,0,0) ;
+}
