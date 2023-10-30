@@ -1,10 +1,17 @@
 package nlcs.project.Controller;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import nlcs.project.Application;
 import nlcs.project.Model.Category;
 import nlcs.project.Model.database;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.Optional;
@@ -88,8 +95,20 @@ public class CategoryForm {
                     alert.showAndWait();
                     Cateform_submit.getScene().getWindow().hide();
 
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.CateshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Cateform_submit.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
+
                 }
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -153,9 +172,20 @@ public class CategoryForm {
                     alert.setHeaderText(null);
                     alert.setContentText("Cancelled");
                     alert.showAndWait();
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.CateshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Cateform_submit2.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
                 }
 
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }

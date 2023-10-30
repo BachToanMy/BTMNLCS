@@ -3,6 +3,7 @@ package nlcs.project.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -10,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import nlcs.project.Application;
@@ -17,9 +19,11 @@ import nlcs.project.Model.Account;
 import nlcs.project.Model.database;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
+import java.util.ResourceBundle;
 
-public class signupcontroller {
+public class signupcontroller implements Initializable {
 
     @FXML
     private AnchorPane signin_form;
@@ -98,96 +102,94 @@ public class signupcontroller {
 
     }
 
-    public void signup(ActionEvent event){
-        if(fullname_field.getText().isEmpty()||
-            phone_field.getText().isEmpty()||
-            email_field.getText().isEmpty()||
-            username_field.getText().isEmpty()||
-            password_field.getText().isEmpty()||
-            cpassword_field.getText().isEmpty()){
+    public void signup() {
+        if (fullname_field.getText().isEmpty() ||
+                phone_field.getText().isEmpty() ||
+                email_field.getText().isEmpty() ||
+                username_field.getText().isEmpty() ||
+                password_field.getText().isEmpty() ||
+                cpassword_field.getText().isEmpty()) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Message");
             alert.setHeaderText(null);
             alert.setContentText("Please fill all blank fields");
             alert.showAndWait();
-        }else if(phone_field.getText().length()!=10){
+        } else if (phone_field.getText().length() != 10) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Message");
             alert.setHeaderText(null);
             alert.setContentText("Phone number must be ten numbers");
             alert.showAndWait();
-        }else if(!password_field.getText().equals(cpassword_field.getText())){
+        } else if (!password_field.getText().equals(cpassword_field.getText())) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Message");
             alert.setHeaderText(null);
             alert.setContentText("Confirm password not equals to password");
             alert.showAndWait();
         } else {
-            String checkusername="SELECT username FROM account WHERE username = '"
+            String checkusername = "SELECT username FROM account WHERE username = '"
                     + username_field.getText() + "'";
-            try{
+            try {
                 statement = connection.createStatement();
                 result = statement.executeQuery(checkusername);
-                if(result.next()){
+                if (result.next()) {
                     alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error Message");
                     alert.setHeaderText(null);
                     alert.setContentText(username_field.getText() + "is already taken");
                     alert.showAndWait();
-                }else{
-                    String insertUser = "INSERT INTO user "
-                            + "(fullname,phone,email,date)"
-                            + "VALUE(?,?,?,?)";
-                    preparedStatement = connection.prepareStatement(insertUser);
-                    preparedStatement.setString(1,fullname_field.getText());
-                    preparedStatement.setString(2,phone_field.getText());
-                    preparedStatement.setString(3,email_field.getText());
-                    java.util.Date date = new java.util.Date();
-                    java.sql.Date sqlDate = new  java.sql.Date(date.getTime());;
-                    preparedStatement.setString(4,String.valueOf(sqlDate));
-
+                } else {
+                    String insertAccount = "INSERT INTO account "
+                            + "(Username,Password,date)"
+                            + "VALUE(?,?,?)";
+                    preparedStatement = connection.prepareStatement(insertAccount);
+                    preparedStatement.setString(1, username_field.getText());
+                    preparedStatement.setString(2, password_field.getText());
+                    java.util.Date date1 = new java.util.Date();
+                    java.sql.Date sqlDate1 = new java.sql.Date(date1.getTime());
+                    ;
+                    preparedStatement.setString(3, String.valueOf(sqlDate1));
                     preparedStatement.executeUpdate();
-
                     alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error Message");
                     alert.setHeaderText(null);
-                    alert.setContentText("Successfully Add User");
+                    alert.setContentText("Successfully Add Account");
                     alert.showAndWait();
-
-                    String getiduser = "SELECT MAX(iduser) FROM user";
-                    preparedStatement = connection.prepareStatement(getiduser);
+                    String getid = "SELECT MAX(idaccount) FROM account";
+                    preparedStatement = connection.prepareStatement(getid);
                     result = preparedStatement.executeQuery();
-                    if(result.next()){
-                        Integer iduser = result.getInt("MAX(iduser)");
-                        String insertAccount = "INSERT INTO account "
-                                + "(iduser,Username,Password,date)"
-                                + "VALUE(?,?,?,?)";
-                        preparedStatement = connection.prepareStatement(insertAccount);
-                        preparedStatement.setString(1,iduser.toString());
-                        preparedStatement.setString(2,username_field.getText());
-                        preparedStatement.setString(3,password_field.getText());
-                        java.util.Date date1 = new java.util.Date();
-                        java.sql.Date sqlDate1 = new  java.sql.Date(date1.getTime());;
-                        preparedStatement.setString(4,String.valueOf(sqlDate1));
+                    if (result.next()) {
+                        int id = result.getInt("MAX(idaccount)");
+                        String insertUser = "INSERT INTO user "
+                                + "(fullname,phone,email,date,idaccount)"
+                                + "VALUE(?,?,?,?,?)";
+                        preparedStatement = connection.prepareStatement(insertUser);
+                        preparedStatement.setString(1, fullname_field.getText());
+                        preparedStatement.setString(2, phone_field.getText());
+                        preparedStatement.setString(3, email_field.getText());
+                        java.util.Date date = new java.util.Date();
+                        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                        ;
+                        preparedStatement.setString(4, String.valueOf(sqlDate));
+                        preparedStatement.setInt(5, id);
 
                         preparedStatement.executeUpdate();
+
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Error Message");
                         alert.setHeaderText(null);
-                        alert.setContentText("Successfully Add Account");
+                        alert.setContentText("Successfully Add User");
                         alert.showAndWait();
                         signin_form.setVisible(true);
                         signup_form.setVisible(false);
                     }
-
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
-    public void signin(ActionEvent event){
+    public void signin(){
         if(signinname_field.getText().isEmpty() || signinpass_field.getText().isEmpty()){
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Message");
@@ -206,7 +208,8 @@ public class signupcontroller {
 
                 if(result.next()){
                     //TO GET THE USERNAME THAT USER USED
-                    Account.username = signinname_field.getText();
+//                    Account.username = signinname_field.getText();
+                    Account account1 = new Account(result.getString("idaccount"),signinname_field.getText());
                     alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information Message");
                     alert.setHeaderText(null);
@@ -215,6 +218,8 @@ public class signupcontroller {
                     FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
                     Stage stage = new Stage();
                     Scene scene = new Scene(fxmlLoader.load());
+                    Mainview Mainviewcontroller = fxmlLoader.<Mainview>getController();
+                    Mainviewcontroller.setData(account1);
                     stage.setTitle("Welcome to myClothing");
                     stage.setScene(scene);
                     stage.show();
@@ -238,4 +243,17 @@ public class signupcontroller {
     }
 
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        signin_form.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                signin();
+            }
+        });
+        signup_form.setOnKeyPressed(keyEvent ->{
+            if(keyEvent.getCode() == KeyCode.ENTER){
+                signup();
+            }
+        } );
+    }
 }

@@ -3,17 +3,23 @@ package nlcs.project.Controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import nlcs.project.Application;
 import nlcs.project.Model.Brand;
 import nlcs.project.Model.Product;
 import nlcs.project.Model.database;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -176,8 +182,19 @@ public class ProductFormController implements Initializable {
                     alert.setContentText("Successfully Add Product");
                     alert.showAndWait();
                     Proform_submit.getScene().getWindow().hide();
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.ProductshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Proform_submit.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
                 }
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -207,6 +224,10 @@ public class ProductFormController implements Initializable {
         Proform_priceout.setText(product.getPrice_out().toString());
         Proform_stock.setText(product.getStock().toString());
         Proform_note.setText(product.getNote());
+        imagepath=product.getImage();
+        String path = "File:" + product.getImage();
+        Image image = new Image(path,200,214,false,true);
+        Proform_image.setImage(image);
     }
     @FXML
     private Button Proform_submit2;
@@ -241,7 +262,7 @@ public class ProductFormController implements Initializable {
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("R U sure U want to update brand id: "+Proform_id.getText());
+                alert.setContentText("Are you want to update brand id: "+Proform_id.getText());
                 Optional<ButtonType> option = alert.showAndWait();
 
                 if(option.get().equals(ButtonType.OK)){
@@ -271,15 +292,35 @@ public class ProductFormController implements Initializable {
                     alert.setContentText("Successfully Updated");
                     alert.showAndWait();
                     Proform_submit2.getScene().getWindow().hide();
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.ProductshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Proform_submit2.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
                 } else {
                     alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error Message");
                     alert.setHeaderText(null);
                     alert.setContentText("Cancelled");
                     alert.showAndWait();
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.ProductshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Proform_submit2.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
                 }
 
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }

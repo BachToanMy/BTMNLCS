@@ -1,12 +1,18 @@
 package nlcs.project.Controller;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import nlcs.project.Application;
 import nlcs.project.Model.Brand;
 import nlcs.project.Model.Category;
 import nlcs.project.Model.database;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 
@@ -88,12 +94,24 @@ public class BrandFormController {
                     alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information Message");
                     alert.setHeaderText(null);
-                    alert.setContentText("Successfully Add Category");
+                    alert.setContentText("Successfully Add Brand");
                     alert.showAndWait();
                     Brandform_submit.getScene().getWindow().hide();
 
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.BrandshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Brandform_submit.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
                 }
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -148,9 +166,21 @@ public class BrandFormController {
                     alert.setHeaderText(null);
                     alert.setContentText("Cancelled");
                     alert.showAndWait();
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainview.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Mainview controller = fxmlLoader.<Mainview>getController();
+                    controller.BrandshowData();
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    Brandform_submit2.setOnAction(event1 -> {
+                        Event.fireEvent(stage ,new ActionEvent());
+                    });
                 }
 
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }

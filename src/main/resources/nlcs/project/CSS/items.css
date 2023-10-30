@@ -1,0 +1,32 @@
+*{
+    -fx-focus-traversable: false;
+}
+.bg{
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+}
+.shadow{
+    -fx-effect:dropshadow(three-pass-box,rgba(0,0,0,0.5),5,0,0,0) ;
+}
+.btn{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-font-family: "Bodoni MT";
+    -fx-border-radius: 2px 0 0 2px;
+}
+.btn:hover{
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-radius: 2px 0 0 2px;
+}
+.btnr{
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-font-family: "Bodoni MT";
+    -fx-border-radius: 0 2px 2px 0;
+}
+.text-field{
+    -fx-border-radius: none;
+    -fx-border-color: black;
+    -fx-pref-height: 24px;
+}
