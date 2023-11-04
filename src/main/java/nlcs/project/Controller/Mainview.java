@@ -9,10 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -24,6 +28,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +91,8 @@ public class Mainview implements Initializable {
 
     @FXML
     private TableColumn<Product, String> Product_colNote;
+    @FXML
+    private TableColumn<Product, ImageView> Product_colImage;
 
     @FXML
     private TableColumn<Product, Double> Product_colPricein;
@@ -121,6 +128,9 @@ public class Mainview implements Initializable {
     String id_account;
     DecimalFormat formatter = new DecimalFormat("#.##");
     private Account account = new Account();
+    @FXML private Label product_total;
+    @FXML private Label brand_total;
+    @FXML private Label category_total;
     public void setData(Account account) {
         username = account.getUsername();
         id_account = account.getIdaccount();
@@ -159,11 +169,11 @@ public class Mainview implements Initializable {
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();
         stage.initOwner(scene.getWindow());
-        scene.getWindow().addEventHandler(ActionEvent.ACTION, this.childStageCategoryAction);
         stage.setTitle("Hello!");
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        scene.getWindow().addEventHandler(ActionEvent.ACTION, this.childStageCategoryAction);
     }
 
     public void updateCategory() throws IOException {
@@ -182,17 +192,17 @@ public class Mainview implements Initializable {
 
             Stage stage = new Stage();
             stage.initOwner(scene.getWindow());
-            scene.getWindow().addEventHandler(ActionEvent.ACTION, this.childStageCategoryAction);
+
             stage.setTitle("Hello!");
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
-
-            stage.show();
+            scene.getWindow().addEventHandler(ActionEvent.ACTION, this.childStageCategoryAction);
         }
     }
 
     public void CateshowData() {
+        Integer total=0;
         ObservableList<Category> listData = FXCollections.observableArrayList();
         String sql = "SELECT * FROM category";
         try {
@@ -201,6 +211,7 @@ public class Mainview implements Initializable {
 
             Category prod;
             while (result.next()) {
+                total+=1;
                 prod = new Category(result.getString("category_id"),
                         result.getString("category_name"),
                         result.getString("note"));
@@ -214,6 +225,7 @@ public class Mainview implements Initializable {
         Cate_colNote.setCellValueFactory(new PropertyValueFactory<>("Category_Note"));
 
         Cate_table.setItems(listData);
+        category_total.setText(total.toString());
     }
 
     public void deleteCategory() {
@@ -260,9 +272,9 @@ public class Mainview implements Initializable {
         }
     }
 
-    public void loadCategory() {
-        CateshowData();
-    }
+//    public void loadCategory() {
+//        CateshowData();
+//    }
 
     //BRAND MANAGEMENT
     public void addBrand() throws IOException {
@@ -283,6 +295,7 @@ public class Mainview implements Initializable {
     }
 
     public void BrandshowData() {
+        Integer total=0;
         ObservableList<Brand> listData = FXCollections.observableArrayList();
         String sql = "SELECT * FROM brand";
         try {
@@ -291,6 +304,7 @@ public class Mainview implements Initializable {
 
             Brand prod;
             while (result.next()) {
+                total+=1;
                 prod = new Brand(result.getString("brand_id"),
                         result.getString("brand_name"),
                         result.getString("note"));
@@ -304,6 +318,7 @@ public class Mainview implements Initializable {
         Brand_colNote.setCellValueFactory(new PropertyValueFactory<>("Brand_Note"));
 
         Brand_table.setItems(listData);
+        brand_total.setText(total.toString());
     }
 
     public void deleteBrand() {
@@ -411,8 +426,9 @@ public class Mainview implements Initializable {
         }
     }
 
-    //Product
+    //////////////////////////////////////////////////////////////////////PRODUCT///////////////////////////////////////////////////////////
     public void ProductshowData() {
+        Integer total=0;
         ObservableList<Product> listData = FXCollections.observableArrayList();
         String sql = "SELECT * FROM product";
         String searchbox = Product_searchbox.getSelectionModel().getSelectedItem();
@@ -439,6 +455,7 @@ public class Mainview implements Initializable {
         try {
             Product prod;
             while (result.next()) {
+                total = total + result.getInt("stock");
                 String category = null;
                 String brand = null;
                 String getCategory = "SELECT category_name FROM category WHERE category_id = ?";
@@ -455,6 +472,8 @@ public class Mainview implements Initializable {
                 if (result2.next()) {
                     brand = result2.getString("brand_name");
                 }
+//                String path = "File:"+result.getString("image");
+//                System.out.println(path);
                 prod = new Product(result.getString("product_id"),
                         result.getString("product_name"),
                         result.getString("category_id"),
@@ -480,11 +499,19 @@ public class Mainview implements Initializable {
         Product_colPriceout.setCellValueFactory(new PropertyValueFactory<>("Price_out"));
         Product_colStock.setCellValueFactory(new PropertyValueFactory<>("Stock"));
         Product_colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+//        Product_colImage.setCellValueFactory(new PropertyValueFactory<Product,ImageView>("image"));
         Product_colNote.setCellValueFactory(new PropertyValueFactory<>("Note"));
 
         Product_table.setItems(listData);
+        product_total.setText(total.toString());
     }
-
+    @FXML private ImageView product_imageview;
+    public void ShowProductImage(){
+        Product prod = Product_table.getSelectionModel().getSelectedItem();
+        String path = "File:" + prod.getImage();
+        Image image = new Image(path,134,126,false,true);
+        product_imageview.setImage(image);
+    }
     public void addProduct() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("Product_form.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -498,9 +525,9 @@ public class Mainview implements Initializable {
         stage.show();
     }
 
-    public void loadProduct() {
-        ProductshowData();
-    }
+//    public void loadProduct() {
+//        ProductshowData();
+//    }
 
     public void deleteProduct() {
         Product prod = Product_table.getSelectionModel().getSelectedItem();
@@ -598,8 +625,8 @@ public class Mainview implements Initializable {
                 CallableStatement statement1 = connection.prepareCall("CALL ThemSP(?,?)");
                 statement1.setString(1, id_account);
                 statement1.setString(2, prod.getProduct_ID());
-                System.out.println(id_account);
-                System.out.println(prod.getProduct_ID());
+//                System.out.println(id_account);
+//                System.out.println(prod.getProduct_ID());
                 result = statement1.executeQuery();
 //                System.out.println(result);
                 alert = new Alert(Alert.AlertType.INFORMATION);
@@ -630,14 +657,16 @@ public class Mainview implements Initializable {
     private AnchorPane Category_form;
     @FXML
     private AnchorPane Brand_form;
+    @FXML AnchorPane Receipt_form;
     @FXML
     private Button product_btn;
     @FXML
     private Button dashboard_btn;
     @FXML
-    private Button brand_btn;
+    private Button Brand_btn;
     @FXML
     private Button Category_btn;
+    @FXML private Button Receipt_btn;
     @FXML
     private Button cart_btn;
 
@@ -647,6 +676,7 @@ public class Mainview implements Initializable {
         Category_form.setVisible(false);
         Cart_form.setVisible(false);
         dashboard_form.setVisible(false);
+        Receipt_form.setVisible(false);
     }
 
     public void switchForm(ActionEvent event) throws IOException {
@@ -660,14 +690,23 @@ public class Mainview implements Initializable {
             setFalseVisible();
             dashboard_form.setVisible(true);
             daily();
+            revenuechart();
+            barchart();
+            db_table();
+            setDashboard_piechart(new ActionEvent());
         } else if (event.getSource() == Category_btn) {
             setFalseVisible();
             Category_form.setVisible(true);
             CateshowData();
-        } else if (event.getSource() == brand_btn) {
+        } else if (event.getSource() == Brand_btn) {
             setFalseVisible();
             Brand_form.setVisible(true);
             BrandshowData();
+        } else if (event.getSource()==Receipt_btn){
+            setFalseVisible();
+            Receipt_form.setVisible(true);
+            rcp_comdate();
+            ReceiptShowData();
         } else {
             setFalseVisible();
             Cart_form.setVisible(true);
@@ -741,6 +780,8 @@ public class Mainview implements Initializable {
         if(itemListData.size()==0){
             cart_scrollpan.setVisible(false);
             cart_label.setVisible(true);
+            Cart_nop.setText(String.valueOf(0));
+            Cart_total.setText(String.valueOf(0.0));
         } else{
             cart_scrollpan.setVisible(true);
             cart_label.setVisible(false);
@@ -751,7 +792,7 @@ public class Mainview implements Initializable {
             cart_gridpane.getChildren().clear();
             cart_gridpane.getRowConstraints().clear();
             cart_gridpane.getColumnConstraints().clear();
-            System.out.println(itemListData.size());
+//            System.out.println(itemListData.size());
             for (int m = 0; m < itemListData.size(); m++) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(Application.class.getResource("items.fxml"));
@@ -793,29 +834,40 @@ public class Mainview implements Initializable {
     @FXML private Label dashboard_nor;
     @FXML private Label dashboard_nop;
     @FXML private DatePicker dashboard_datepicker;
+    @FXML private Label dashboard_nopv;
     public void daily(){
-        System.out.println(dashboard_datepicker.getValue());
+//        System.out.println(dashboard_datepicker.getValue());
+        LocalDate date = dashboard_datepicker.getValue();
         Double revenue=0.0;
         Integer nop=0;
         Integer nor=0;
-        String sql = "SELECT COUNT(*),SUM(finaltotal) FROM receipt WHERE date=?";
-        String sql2 = "SELECT SUM(quantity) FROM receipt JOIN detail_cart using(cart_id)";
+        Integer nopv=0;
+        String sql = "SELECT COUNT(*),SUM(finaltotal) FROM receipt WHERE date(date)=?";
+        String sql2 = "SELECT SUM(quantity) FROM receipt JOIN detail_cart using(cart_id) WHERE date(date)=?";
+        String sql3= "SELECT SUM(stock) FROM product";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setDate(1,sqlDate);
+            preparedStatement.setDate(1, Date.valueOf(date));
             result=preparedStatement.executeQuery();
             if (result.next()){
                 revenue = result.getDouble("SUM(finaltotal)");
                 nor = result.getInt("COUNT(*)");
             }
             preparedStatement = connection.prepareStatement(sql2);
+            preparedStatement.setDate(1, Date.valueOf(date));
             result = preparedStatement.executeQuery();
             if(result.next()){
                 nop = result.getInt("SUM(quantity)");
             }
+            preparedStatement = connection.prepareStatement(sql3);
+            result = preparedStatement.executeQuery();
+            if(result.next()){
+                nopv = result.getInt("SUM(stock)");
+            }
             dashboard_revenue.setText(formatter.format(revenue));
             dashboard_nor.setText(nor.toString());
             dashboard_nop.setText(nop.toString());
+            dashboard_nopv.setText(nopv.toString());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -826,6 +878,7 @@ public class Mainview implements Initializable {
     public void revenuechart(){
         int i;
         String sql = "SELECT SUM(finaltotal) FROM receipt WHERE month(date)=?";
+        dashboard_revenuemonth.getData().clear();
         XYChart.Series series = new XYChart.Series();
         series.setName("Revenue");
         for(i=1;i<=12;i++){
@@ -845,8 +898,285 @@ public class Mainview implements Initializable {
 
         dashboard_revenuemonth.getData().add(series);
     }
-    public void chart(){
+    @FXML private BarChart dashboard_barchart;
+    public void barchart(){
+        int i;
+        String sql2 = "SELECT SUM(quantity) FROM receipt JOIN detail_cart using(cart_id) WHERE month(date)=?";
+        String sql = "SELECT COUNT(*) FROM receipt WHERE month(date)=?";
+        dashboard_barchart.getData().clear();
+        XYChart.Series series1 = new XYChart.Series<>();
+        series1.setName("Receipt");
+        XYChart.Series series2 = new XYChart.Series<>();
+        series2.setName("Quantity");
+        for(i=1;i<=12;i++) {
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, i);
+                result = preparedStatement.executeQuery();
+                if (result.next()) {
+                    Month month = Month.of(i);
+                    series1.getData().add(new XYChart.Data(month.toString(), result.getDouble("COUNT(*)")));
+                }
+                preparedStatement = connection.prepareStatement(sql2);
+                preparedStatement.setInt(1, i);
+                result=preparedStatement.executeQuery();
+                if(result.next()){
+                    Month month = Month.of(i);
+                    series2.getData().add(new XYChart.Data(month.toString(), result.getDouble("SUM(quantity)")));
+                }
 
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        dashboard_barchart.setTitle("Quantity of sold products and number of receipt by month");
+        dashboard_barchart.getData().add(series1);
+        dashboard_barchart.getData().add(series2);
+    }
+    @FXML private TableView<Product> dashboard_tableview;
+    @FXML
+    private TableColumn<Product, String> db_colID;
+
+    @FXML
+    private TableColumn<Product, String> db_colName;
+
+    @FXML
+    private TableColumn<Product, String > db_colQuan;
+    public void db_table(){
+        ObservableList<Product> listData = FXCollections.observableArrayList();
+        String sql ="SELECT product_id, product_name, sum " +
+                "FROM ( SELECT product_id, SUM(quantity) AS sum " +
+                "FROM receipt JOIN detail_cart USING (cart_id) " +
+                "GROUP BY product_id ORDER BY sum DESC LIMIT 5) AS derived " +
+                "JOIN product USING (product_id)";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            result = preparedStatement.executeQuery();
+            Product prod;
+            while (result.next()) {
+                prod = new Product(result.getString("product_id"),
+                        result.getString("product_name"),
+                        result.getInt("sum"));
+                listData.add(prod);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        db_colID.setCellValueFactory(new PropertyValueFactory<>("Product_ID"));
+        db_colName.setCellValueFactory(new PropertyValueFactory<>("Product_Name"));
+        db_colQuan.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        dashboard_tableview.setItems(listData);
+
+    }
+    @FXML private PieChart dashboard_piechart;
+    @FXML private PieChart dashboard_brandchart;
+    @FXML private Button cate_btn;
+    @FXML private AnchorPane cate_chart;
+    @FXML private  AnchorPane brand_chart;
+    public void setDashboard_piechart(ActionEvent event){
+        dashboard_brandchart.getData().clear();
+        dashboard_brandchart.setTitle("Percentage of sold items by Brand");
+        dashboard_brandchart.setLabelsVisible(true);
+        String sql1="SELECT brand_name,SUM(quantity) " +
+                "FROM receipt JOIN detail_cart using(cart_id) " +
+                "JOIN product using(product_id) " +
+                "JOIN brand using(brand_id) GROUP BY brand_id";
+        dashboard_piechart.getData().clear();
+        dashboard_piechart.setTitle("Percentage of sold items by Category");
+        dashboard_piechart.setLabelsVisible(true);
+        String sql2="SELECT category_name,SUM(quantity) " +
+                "FROM receipt JOIN detail_cart using(cart_id) " +
+                "JOIN product using(product_id) " +
+                "JOIN category using(category_id) " +
+                "GROUP BY category_id";
+        if(event.getSource() == cate_btn || event.getSource()==null){
+            try {
+                preparedStatement = connection.prepareStatement(sql2);
+                result = preparedStatement.executeQuery();
+                while(result.next()){
+                    String name = result.getString("category_name");
+                    int sl = result.getInt("SUM(quantity)");
+                    dashboard_piechart.getData().add(new PieChart.Data(name, sl));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            brand_chart.setVisible(false);
+            cate_chart.setVisible(true);
+        }else{
+            try {
+                preparedStatement = connection.prepareStatement(sql1);
+                result = preparedStatement.executeQuery();
+                while(result.next()){
+                    String name = result.getString("brand_name");
+                    int sl = result.getInt("SUM(quantity)");
+                    dashboard_brandchart.getData().add(new PieChart.Data(name, sl));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            cate_chart.setVisible(false);
+            brand_chart.setVisible(true);
+
+        }
+    }
+    ////////////////////////////////////////////////////////////RECEIPT/////////////////////////////////////////
+    @FXML private TableView<Receipt> Receipt_table;
+    @FXML
+    private TableColumn<Receipt, java.util.Date> Receipt_colDate;
+
+    @FXML
+    private TableColumn<Receipt, Integer> Receipt_colDiscount;
+
+    @FXML
+    private TableColumn<Receipt, Double> Receipt_colFinalTotal;
+
+    @FXML
+    private TableColumn<Receipt, Integer> Receipt_colID;
+
+    @FXML
+    private TableColumn<Receipt, Integer> Receipt_colName;
+
+    @FXML
+    private TableColumn<Receipt, String> Receipt_colNote;
+
+    @FXML
+    private TableColumn<Receipt, Double> Receipt_colPaid;
+
+    @FXML
+    private TableColumn<Receipt, Double> Receipt_colTotal;
+    @FXML private Label receipt_total;
+
+    @FXML private ComboBox rcp_combobox;
+    @FXML private DatePicker rcp_datepicker;
+    public void rcp_comdate(){
+        List<String> chuoi = new ArrayList<>();
+        int i;
+        for(i=1;i<=12;i++){
+            chuoi.add(Month.of(i).toString());
+        }
+        chuoi.add("ALL");
+        ObservableList list = FXCollections.observableArrayList(chuoi);
+        rcp_combobox.setItems(list);
+        rcp_datepicker.setValue(sqlDate.toLocalDate());
+
+    }
+    public void ReceiptshowDatabyMonth() {
+        Receipt_table.getItems().clear();
+        ObservableList<Receipt> listData = FXCollections.observableArrayList();
+        if( rcp_combobox.getSelectionModel().getSelectedItem()!=null && rcp_combobox.getSelectionModel().getSelectedItem().toString() == "ALL"){
+            ReceiptShowData();
+        }else {
+            Month month = Month.valueOf(rcp_combobox.getSelectionModel().getSelectedItem().toString());
+            String sql = "SELECT * FROM receipt WHERE month(date)=?";
+            Integer tong=0;
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1,month.ordinal()+1);
+                result = preparedStatement.executeQuery();
+                Receipt receipt;
+                while (result.next()){
+                    tong+=1;
+                    receipt = new Receipt(result.getInt("receipt_id"),
+                            result.getInt("Cart_id"),result.getDouble("total"),
+                            result.getInt("discount"),result.getDouble("finaltotal"),
+                            result.getDouble("paid"),result.getDate("date"),result.getString("note"));
+                    listData.add(receipt);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            Receipt_colID.setCellValueFactory(new PropertyValueFactory<>("receipt_id"));
+            Receipt_colName.setCellValueFactory(new PropertyValueFactory<>("cart_id"));
+            Receipt_colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+            Receipt_colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
+            Receipt_colFinalTotal.setCellValueFactory(new PropertyValueFactory<>("finaltotal"));
+            Receipt_colPaid.setCellValueFactory(new PropertyValueFactory<>("paid"));
+            Receipt_colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+            Receipt_colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
+            receipt_total.setText(tong.toString());
+            Receipt_table.setItems(listData);
+        }
+    }
+    public void ReceiptshowDatabyDate(ActionEvent event) {
+        Receipt_table.getItems().clear();
+        ObservableList<Receipt> listData = FXCollections.observableArrayList();
+        LocalDate date = rcp_datepicker.getValue();
+        rcp_combobox.setValue(Month.of(date.getMonthValue()).toString());
+        String sql = "SELECT * FROM receipt WHERE date(date)=?";
+        Integer tong = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setDate(1, Date.valueOf(date));
+            result = preparedStatement.executeQuery();
+            Receipt receipt;
+            while (result.next()) {
+                tong+=1;
+                receipt = new Receipt(result.getInt("receipt_id"),
+                        result.getInt("Cart_id"), result.getDouble("total"),
+                        result.getInt("discount"), result.getDouble("finaltotal"),
+                        result.getDouble("paid"), result.getDate("date"), result.getString("note"));
+                listData.add(receipt);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Receipt_colID.setCellValueFactory(new PropertyValueFactory<>("receipt_id"));
+        Receipt_colName.setCellValueFactory(new PropertyValueFactory<>("cart_id"));
+        Receipt_colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+        Receipt_colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        Receipt_colFinalTotal.setCellValueFactory(new PropertyValueFactory<>("finaltotal"));
+        Receipt_colPaid.setCellValueFactory(new PropertyValueFactory<>("paid"));
+        Receipt_colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        Receipt_colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
+        receipt_total.setText(tong.toString());
+        Receipt_table.setItems(listData);
+    }
+
+    public void ReceiptShowData(){
+        ObservableList<Receipt> listData = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM receipt";
+        Integer  tong=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            result=preparedStatement.executeQuery();
+            Receipt receipt;
+            while (result.next()){
+                tong+=1;
+                receipt = new Receipt(result.getInt("receipt_id"),
+                        result.getInt("Cart_id"),result.getDouble("total"),
+                        result.getInt("discount"),result.getDouble("finaltotal"),
+                        result.getDouble("paid"),result.getDate("date"),result.getString("note"));
+                listData.add(receipt);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Receipt_colID.setCellValueFactory(new PropertyValueFactory<>("receipt_id"));
+        Receipt_colName.setCellValueFactory(new PropertyValueFactory<>("cart_id"));
+        Receipt_colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+        Receipt_colDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        Receipt_colFinalTotal.setCellValueFactory(new PropertyValueFactory<>("finaltotal"));
+        Receipt_colPaid.setCellValueFactory(new PropertyValueFactory<>("paid"));
+        Receipt_colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        Receipt_colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
+        receipt_total.setText(tong.toString());
+        Receipt_table.setItems(listData);
+    }
+    @FXML private Button logout_btn;
+    public void logout(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("signup.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Welcome to myClothing");
+            stage.setScene(scene);
+            stage.show();
+            logout_btn.getScene().getWindow().hide();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -856,6 +1186,9 @@ public class Mainview implements Initializable {
         dashboard_datepicker.setValue(sqlDate.toLocalDate());
         daily();
         revenuechart();
+        barchart();
+        db_table();
+        setDashboard_piechart(new ActionEvent());
         Cart_form.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 try {

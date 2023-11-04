@@ -92,7 +92,6 @@ public class Items {
                         "product WHERE product_id = ?";
                 try{
                         preparedStatement = connection.prepareStatement(sql);
-                        System.out.println("PROID ="+prodid);
                         preparedStatement.setString(1,prodid);
                         result = preparedStatement.executeQuery();
                         if(result.next()){
@@ -203,27 +202,27 @@ public class Items {
                                 preparedStatement.setString(1,prodid);
                                 preparedStatement.setInt(2,cartid);
                                 preparedStatement.executeUpdate();
-                                if (result.next()){
-                                        alert = new Alert(Alert.AlertType.INFORMATION);
-                                        alert.setTitle("INFORMATION MESSAGE");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Delete Successfully");
-                                        alert.showAndWait();
-                                        int stk=0;
-                                        String checkStock = "SELECT stock FROM product WHERE product_id = ?";
-                                        preparedStatement = connection.prepareStatement(checkStock);
-                                        preparedStatement.setString(1,prodid);
-                                        result = preparedStatement.executeQuery();
-                                        if(result.next()){
-                                                stk=result.getInt("stock");
-                                        }
-                                        int sl = stk+Integer.parseInt(item_quantity.getText());
-                                        String sql2 = "UPDATE product SET stock = ? WHERE product_id=?";
-                                        preparedStatement=connection.prepareStatement(sql2);
-                                        preparedStatement.setInt(1,sl);
-                                        preparedStatement.setString(2,prodid);
-                                        preparedStatement.executeUpdate();
+
+                                int stk=0;
+                                String checkStock = "SELECT stock FROM product WHERE product_id = ?";
+                                preparedStatement = connection.prepareStatement(checkStock);
+                                preparedStatement.setString(1,prodid);
+                                result = preparedStatement.executeQuery();
+                                if(result.next()){
+                                        stk=result.getInt("stock");
                                 }
+                                int sl = stk+Integer.parseInt(item_quantity.getText());
+                                String sql2 = "UPDATE product SET stock = ? WHERE product_id=?";
+                                preparedStatement=connection.prepareStatement(sql2);
+                                preparedStatement.setInt(1,sl);
+                                preparedStatement.setString(2,prodid);
+                                preparedStatement.executeUpdate();
+
+                                alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("INFORMATION MESSAGE");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Delete Successfully");
+                                alert.showAndWait();
                         } catch (SQLException e) {
                                 throw new RuntimeException(e);
                         }
@@ -256,4 +255,57 @@ public class Items {
 
         }
 
+        public void setQuantity() {
+                int soluong;
+                if(item_quantity.getText().isEmpty()){
+                        soluong=0;
+                }else{
+                        soluong = Integer.parseInt(item_quantity.getText());
+
+                }
+                int quantity = 0;
+                String getquantity = "SELECT * FROM detail_cart WHERE product_id=? AND Cart_id=?";
+                String checkStock = "SELECT price_out,stock FROM product WHERE product_id = ?";
+                try{
+                        preparedStatement = connection.prepareStatement(getquantity);
+                        preparedStatement.setString(1,prodid);
+                        preparedStatement.setInt(2,cartid);
+                        result = preparedStatement.executeQuery();
+                        if(result.next()){
+                                quantity = result.getInt("quantity");
+                        }
+                        preparedStatement = connection.prepareStatement(checkStock);
+                        preparedStatement.setString(1, prodid);
+                        result = preparedStatement.executeQuery();
+                        if (result.next()) {
+                                checkstk = result.getInt("stock");
+                                if (checkstk < soluong-quantity) {
+                                        alert = new Alert(Alert.AlertType.ERROR);
+                                        alert.setTitle("Error Message");
+                                        alert.setHeaderText(null);
+                                        alert.setContentText("Product is out of stock");
+                                        alert.showAndWait();
+                                } else {
+                                        String sql = "UPDATE detail_cart SET quantity=?,price=? WHERE product_id = ? AND Cart_id=?";
+                                        preparedStatement = connection.prepareStatement(sql);
+                                        preparedStatement.setInt(1, soluong);
+                                        preparedStatement.setDouble(2, soluong * price_out);
+                                        preparedStatement.setString(3, prodid);
+                                        preparedStatement.setInt(4, cartid);
+                                        preparedStatement.executeUpdate();
+                                        String sql2 = "UPDATE product SET stock=? WHERE product_id=?";
+                                        preparedStatement = connection.prepareStatement(sql2);
+                                        preparedStatement.setInt(1, checkstk - (soluong-quantity));
+                                        preparedStatement.setString(2, prodid);
+                                        preparedStatement.executeUpdate();
+
+                                }
+                        }
+                } catch (SQLException e) {
+                        throw new RuntimeException(e);
+
+                }
+        }
 }
+
+

@@ -1,3 +1,6 @@
+*{
+    -fx-focus-traversable: false;
+}
 .bg{
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;

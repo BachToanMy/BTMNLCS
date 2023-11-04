@@ -1,5 +1,8 @@
 package nlcs.project.Model;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.sql.Statement;
 import java.util.Date;
 
@@ -16,6 +19,8 @@ public class Product {
     private String Image;
     private Date date;
     private String Note;
+    private ImageView image;
+    private int quantity=0;
     public Product(String product_ID,String product_Name,String category_id,String category_name,String brand_id,String brand_name,
                    Double price_in,Double price_out, Integer stock,String image,Date date,String note )
     {
@@ -31,6 +36,27 @@ public class Product {
         this.Image = image;
         this.date = date;
         this.Note = note;
+    }
+    public Product(String product_ID, String product_Name, String category_id, String category_name, String brand_id, String brand_name,
+                   Double price_in, Double price_out, Integer stock, ImageView image, Date date, String note )
+    {
+        this.Product_ID = product_ID;
+        this.Product_Name = product_Name;
+        this.Category_id = category_id;
+        this.Category_name = category_name;
+        this.Brand_id = brand_id;
+        this.Brand_name = brand_name;
+        this.Price_in = price_in;
+        this.Price_out = price_out;
+        this.Stock = stock;
+        this.image = image;
+        this.date = date;
+        this.Note = note;
+    }
+    public Product(String id,String name,Integer quan){
+        this.Product_ID = id;
+        this.Product_Name = name;
+        this.quantity = quan;
     }
     public String getProduct_ID(){
         return Product_ID;
@@ -68,4 +94,8 @@ public class Product {
     public String getNote(){
         return Note;
     }
+    public Integer getQuantity(){
+        return quantity;
+    }
+    public ImageView getimage(){return image;}
 }
