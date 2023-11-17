@@ -137,8 +137,14 @@ public class BrandFormController {
             alert.setHeaderText(null);
             alert.setContentText("Please fill all blank fields");
             alert.showAndWait();
+        }else if(Brandform_id.getText()!=brandid) {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Can not change brand id");
+            alert.showAndWait();
         }else {
-            String updatedata = "UPDATE brand SET brand_id=?,brand_name=?,note=? WHERE brand_id=?";
+            String updatedata = "UPDATE brand SET brand_name=?,note=? WHERE brand_id=?";
             try {
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Error Message");
@@ -148,10 +154,9 @@ public class BrandFormController {
 
                 if(option.get().equals(ButtonType.OK)){
                     preparedStatement = connection.prepareStatement(updatedata);
-                    preparedStatement.setString(1,Brandform_id.getText());
-                    preparedStatement.setString(2,Brandform_name.getText());
-                    preparedStatement.setString(3,Brandform_note.getText());
-                    preparedStatement.setString(4,brandid);
+                    preparedStatement.setString(1,Brandform_name.getText());
+                    preparedStatement.setString(2,Brandform_note.getText());
+                    preparedStatement.setString(3,Brandform_id.getText());
                     preparedStatement.executeUpdate();
 
                     alert = new Alert(Alert.AlertType.INFORMATION);

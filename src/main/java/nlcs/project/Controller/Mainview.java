@@ -108,6 +108,17 @@ public class Mainview implements Initializable {
 
     @FXML
     private TableView<Product> Product_table;
+    @FXML
+    private Button Employee_btn;
+
+    @FXML
+    private Button Employee_delete;
+
+    @FXML
+    private AnchorPane Employee_form;
+
+    @FXML
+    private TableView<User> Employee_table;
     PreparedStatement preparedStatement;
     Statement statement;
 
@@ -135,6 +146,7 @@ public class Mainview implements Initializable {
         username = account.getUsername();
         id_account = account.getIdaccount();
         displayName();
+        checkadmin();
     }
 
     public void displayName() {
@@ -155,7 +167,7 @@ public class Mainview implements Initializable {
     };
     EventHandler<ActionEvent> childStageItemAction = event -> {
         try {
-            menuDisplayCard();
+            CartShowData();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -435,9 +447,9 @@ public class Mainview implements Initializable {
         if ((searchbox != null) && (searchbox.toString() != "ALL")) {
             Integer index = Product_searchbox.getSelectionModel().getSelectedItem().toString().indexOf("-");
             String search = Product_searchbox.getSelectionModel().getSelectedItem().toString().substring(0, index);
-            String checkproid = "SELECT * FROM product WHERE category_id = ? OR brand_id = ?";
+            String sql1 = "SELECT * FROM product WHERE category_id = ? OR brand_id = ?";
             try {
-                preparedStatement = connection.prepareStatement(checkproid);
+                preparedStatement = connection.prepareStatement(sql1);
                 preparedStatement.setString(1, search);
                 preparedStatement.setString(2, search);
                 result = preparedStatement.executeQuery();
@@ -671,6 +683,7 @@ public class Mainview implements Initializable {
     private Button cart_btn;
 
     public void setFalseVisible() {
+        Employee_form.setVisible(false);
         Product_form.setVisible(false);
         Brand_form.setVisible(false);
         Category_form.setVisible(false);
@@ -707,10 +720,14 @@ public class Mainview implements Initializable {
             Receipt_form.setVisible(true);
             rcp_comdate();
             ReceiptShowData();
+        }else if (event.getSource()==Employee_btn){
+            setFalseVisible();
+            Employee_form.setVisible(true);
+            EmployeeShowData();
         } else {
             setFalseVisible();
             Cart_form.setVisible(true);
-            menuDisplayCard();
+            CartShowData();
         }
     }
 
@@ -774,7 +791,7 @@ public class Mainview implements Initializable {
     @FXML private Label cart_label;
     java.util.Date date = new java.util.Date();
     java.sql.Date sqlDate = new  java.sql.Date(date.getTime());;
-    public void menuDisplayCard() throws IOException {
+    public void CartShowData() throws IOException {
         itemListData.clear();
         itemListData.addAll(ItemGetData());
         if(itemListData.size()==0){
@@ -795,10 +812,10 @@ public class Mainview implements Initializable {
 //            System.out.println(itemListData.size());
             for (int m = 0; m < itemListData.size(); m++) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(Application.class.getResource("items.fxml"));
+                fxmlLoader.setLocation(Application.class.getResource("detail_cart.fxml"));
                 try {
                     HBox anchorPane = fxmlLoader.load();
-                    Items controller = fxmlLoader.<Items>getController();
+                    detail_cart controller = fxmlLoader.<detail_cart>getController();
                     controller.setItem(itemListData.get(m));
                     if (col == 2) {
                         col = 0;
@@ -1164,7 +1181,106 @@ public class Mainview implements Initializable {
         receipt_total.setText(tong.toString());
         Receipt_table.setItems(listData);
     }
-    @FXML private Button logout_btn;
+    ////////////////////////////////////////////////////////////////////////EMPLOYEE//////////////////////////////////////////////
+    @FXML
+    private TableColumn<String, User> Employee_colEmail;
+
+    @FXML
+    private TableColumn<Integer, User> Employee_colIDaccount;
+
+    @FXML
+    private TableColumn<Integer, User> Employee_colIDuser;
+
+    @FXML
+    private TableColumn<String, User> Employee_colName;
+
+    @FXML
+    private TableColumn<String, User> Employee_colPhone;
+
+    @FXML
+    private TableColumn<String, User> Employee_colUsername;
+    public void EmployeeShowData(){
+        ObservableList<User> listData = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM user JOIN account USING (idaccount)";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            result=preparedStatement.executeQuery();
+            User user;
+            while (result.next()){
+                user = new User(result.getInt("iduser"),result.getString("fullname"),result.getString("phone"),result.getString("email")
+                        ,result.getInt("idaccount"),result.getString("username"));
+                listData.add(user);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Employee_colIDuser.setCellValueFactory(new PropertyValueFactory<>("iduser"));
+        Employee_colName.setCellValueFactory(new PropertyValueFactory<>("fullname"));
+        Employee_colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        Employee_colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        Employee_colIDaccount.setCellValueFactory(new PropertyValueFactory<>("idaccount"));
+        Employee_colUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+        Employee_table.setItems(listData);
+    }
+
+    public void deleteEmployee(){
+        User user = Employee_table.getSelectionModel().getSelectedItem();
+        if (user == null) {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please choose user to delete!");
+            alert.showAndWait();
+        } else {
+            Integer id = user.getIduser();
+            Integer ida = user.getIdaccount();
+            alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you want to Delete user : " + user.getFullname() +"with account"+user.getUsername());
+            Optional<ButtonType> option = alert.showAndWait();
+
+            if (option.get().equals(ButtonType.OK)) {
+                String deletedata = "DELETE FROM user WHERE iduser = ?";
+                String deleteaccount = "DELETE FROM account WHERE idaccount = ?";
+                try {
+                    preparedStatement = connection.prepareStatement(deletedata);
+                    preparedStatement.setInt(1, id);
+                    preparedStatement.executeUpdate();
+
+                    preparedStatement = connection.prepareStatement(deleteaccount);
+                    preparedStatement.setInt(1, ida);
+                    preparedStatement.executeUpdate();
+
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Successfully Deleted");
+                    alert.showAndWait();
+
+                    CateshowData();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Cancelled");
+                alert.showAndWait();
+            }
+
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void checkadmin(){
+        System.out.println("Username account: "+username);
+        Employee_btn.setVisible(false);
+        if(username.equals("admin")){
+            Employee_btn.setVisible(true);
+        }
+    }
+    @FXML private ImageView logout_btn;
     public void logout(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("signup.fxml"));
@@ -1192,13 +1308,14 @@ public class Mainview implements Initializable {
         Cart_form.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 try {
-                    menuDisplayCard();
+                    CartShowData();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 //                System.out.println("Bạn đã nhấn Enter!");
             }
         });
+        ///////////////////////////PAYMENT//////////////
 
 
 //        itemListData.addListener(new ListChangeListener<Item> () {

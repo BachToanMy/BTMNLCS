@@ -6,9 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
@@ -23,14 +21,22 @@ import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
 
+import org.apache.commons.codec.cli.Digest;
+import org.apache.commons.codec.digest.DigestUtils;
+
 public class signupcontroller implements Initializable {
 
+
+
+    public String hashString(String string) {
+        return DigestUtils.sha256Hex(string);
+    }
     @FXML
     private AnchorPane signin_form;
     @FXML
     private TextField signinname_field;
     @FXML
-    private TextField signinpass_field;
+    private PasswordField signinpass_field;
     @FXML
     private Button signinbtn;
     @FXML
@@ -54,9 +60,7 @@ public class signupcontroller implements Initializable {
     @FXML
     private Button signintrans;
     @FXML
-    private Button return_btn;
-    @FXML
-    private Button returnbtn;
+    private AnchorPane changePass_form;
     private Alert alert;
 
     private database db = new database();
@@ -65,42 +69,33 @@ public class signupcontroller implements Initializable {
     private ResultSet result;
     private Statement statement;
 
+    @FXML private Button signuptrans1;
+    @FXML private Button signinbtn1;
+    @FXML private Hyperlink changepassbtn;
+
     public Account account = new Account();
 
 
     public void switchForm(ActionEvent event){
-        if(event.getSource() == signuptrans){
+        if(event.getSource() == signuptrans || event.getSource()==signuptrans1){
             signin_form.setVisible(false);
             signup_form.setVisible(true);
-        }
-        if (event.getSource() == signintrans) {
+            changePass_form.setVisible(false);
+        } else if (event.getSource() == signintrans|| event.getSource()==signinbtn1) {
             signin_form.setVisible(true);
             signup_form.setVisible(false);
+            changePass_form.setVisible(false);
+        } else if(event.getSource() == changepassbtn){
+            signin_form.setVisible(false);
+            signup_form.setVisible(false);
+            changePass_form.setVisible(true);
+        }else {
+            signin_form.setVisible(true);
+            signup_form.setVisible(false);
+            changePass_form.setVisible(false);
         }
     }
 
-    public void returnbtn(ActionEvent event) throws IOException {
-        if(event.getSource()==returnbtn) {
-            FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("firstStage.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Hello!");
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.show();
-            returnbtn.getScene().getWindow().hide();
-        }else{
-            FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("firstStage.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Hello!");
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.show();
-            return_btn.getScene().getWindow().hide();
-        }
-
-    }
 
     public void signup() {
         if (fullname_field.getText().isEmpty() ||
@@ -144,7 +139,7 @@ public class signupcontroller implements Initializable {
                             + "VALUE(?,?,?)";
                     preparedStatement = connection.prepareStatement(insertAccount);
                     preparedStatement.setString(1, username_field.getText());
-                    preparedStatement.setString(2, password_field.getText());
+                    preparedStatement.setString(2, hashString(password_field.getText()));
                     java.util.Date date1 = new java.util.Date();
                     java.sql.Date sqlDate1 = new java.sql.Date(date1.getTime());
                     ;
@@ -202,7 +197,7 @@ public class signupcontroller implements Initializable {
                 String uname = signinname_field.getText();
                 String pass = signinpass_field.getText();
                 preparedStatement.setString(1,uname);
-                preparedStatement.setString(2,pass);
+                preparedStatement.setString(2,hashString(pass));
 
                 result = preparedStatement.executeQuery();
 
@@ -222,6 +217,8 @@ public class signupcontroller implements Initializable {
                     Mainviewcontroller.setData(account1);
                     stage.setTitle("Welcome to myClothing");
                     stage.setScene(scene);
+                    stage.setResizable(false);
+                    stage.setFullScreen(true);
                     stage.show();
                     signinbtn.getScene().getWindow().hide();
                 }
@@ -241,7 +238,39 @@ public class signupcontroller implements Initializable {
 
         }
     }
-
+    @FXML private TextField change_username;
+    @FXML private TextField change_oldpass;
+    @FXML private TextField change_newpass;
+    public void changePassword(){
+        String sql = "UPDATE account SET Password=? WHERE username=? and Password=?";
+        if(change_username.getText().isEmpty() || change_oldpass.getText().isEmpty()||change_newpass.getText().isEmpty()){
+            alert=new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill out all fields");
+            alert.showAndWait();
+        }else{
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1,hashString(change_newpass.getText()));
+                preparedStatement.setString(2,change_username.getText());
+                preparedStatement.setString(3,hashString(change_oldpass.getText()));
+                preparedStatement.executeUpdate();
+                alert=new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Change password successfully");
+                alert.showAndWait();
+            } catch (SQLException e) {
+                alert=new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Incorrect username or password");
+                alert.showAndWait();
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -255,5 +284,11 @@ public class signupcontroller implements Initializable {
                 signup();
             }
         } );
+        changePass_form.setOnKeyPressed(keyEvent ->{
+            if(keyEvent.getCode() == KeyCode.ENTER){
+                changePassword();
+            }
+        } );
+
     }
 }

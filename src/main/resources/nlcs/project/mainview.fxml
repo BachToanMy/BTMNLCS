@@ -23,15 +23,15 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nlcs.project.Controller.Mainview">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nlcs.project.Controller.Mainview">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" stylesheets="@CSS/Mainview.css">
          <children>
             <BorderPane layoutX="296.0" layoutY="1.0" prefHeight="630.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
                <left>
-                  <AnchorPane prefHeight="600.0" prefWidth="258.0" BorderPane.alignment="CENTER">
+                  <AnchorPane prefHeight="602.0" prefWidth="258.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane layoutY="5.0" prefHeight="600.0" prefWidth="258.0" styleClass="nav" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane layoutY="5.0" prefHeight="600.0" prefWidth="258.0" styleClass="nav" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane prefHeight="114.0" prefWidth="258.0" styleClass="header">
                                  <children>
@@ -48,12 +48,6 @@
                                  </children>
                               </AnchorPane>
                               <Button fx:id="dashboard_btn" layoutX="22.0" layoutY="125.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="51.0" prefWidth="213.0" text="DASHBOARD">
-                                 <styleClass>
-                                    <String fx:value="navbtn" />
-                                    <String fx:value="shadow" />
-                                 </styleClass>
-                              </Button>
-                              <Button fx:id="logout_btn" layoutY="573.0" mnemonicParsing="false" onAction="#logout" prefHeight="35.0" prefWidth="81.0" text="Logout" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="navbtn" />
                                     <String fx:value="shadow" />
@@ -84,6 +78,17 @@
                                  </styleClass>
                               </Button>
                               <Button fx:id="Receipt_btn" layoutX="22.0" layoutY="471.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="51.0" prefWidth="213.0" text="RECEIPT">
+                                 <styleClass>
+                                    <String fx:value="navbtn" />
+                                    <String fx:value="shadow" />
+                                 </styleClass>
+                              </Button>
+                              <ImageView fx:id="logout_btn" fitHeight="26.0" fitWidth="41.0" layoutX="1.0" layoutY="575.0" onMouseClicked="#logout" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="1.7999999999999545" AnchorPane.leftAnchor="1.0">
+                                 <image>
+                                    <Image url="@CSS/Images/logout.jpg" />
+                                 </image>
+                              </ImageView>
+                              <Button fx:id="Employee_btn" layoutX="22.0" layoutY="541.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="51.0" prefWidth="213.0" text="EMPLOYEE">
                                  <styleClass>
                                     <String fx:value="navbtn" />
                                     <String fx:value="shadow" />
@@ -549,7 +554,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Receipt_form" prefHeight="605.0" prefWidth="842.0" AnchorPane.bottomAnchor="4.7999999999999545" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Receipt_form" prefHeight="605.0" prefWidth="842.0" visible="false" AnchorPane.bottomAnchor="4.7999999999999545" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutY="4.0" prefHeight="600.0" prefWidth="842.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
@@ -589,6 +594,46 @@
                                     </Label>
                                     <DatePicker fx:id="rcp_datepicker" layoutX="617.0" layoutY="36.0" onAction="#ReceiptshowDatabyDate" prefHeight="26.0" prefWidth="108.0" AnchorPane.rightAnchor="118.0" />
                                     <ComboBox fx:id="rcp_combobox" layoutX="745.0" layoutY="36.0" onAction="#ReceiptshowDatabyMonth" prefHeight="26.0" prefWidth="110.0" promptText="Month" AnchorPane.rightAnchor="6.0" />
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="dashboarchart" />
+                                    <String fx:value="shadow" />
+                                 </styleClass>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="Employee_form" prefHeight="799.2" prefWidth="842.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <AnchorPane layoutY="4.0" prefHeight="605.6" prefWidth="842.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="299.0" layoutY="10.0" prefHeight="32.0" prefWidth="242.0" text="EMPLOYEE MANAGEMENT" AnchorPane.leftAnchor="299.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="10.0">
+                                       <font>
+                                          <Font name="Bodoni MT Bold" size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <AnchorPane layoutX="7.0" layoutY="46.0" prefHeight="514.0" prefWidth="863.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="46.0">
+                                       <children>
+                                          <TableView fx:id="Employee_table" prefHeight="519.6" prefWidth="827.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columns>
+                                                <TableColumn fx:id="Employee_colIDuser" prefWidth="102.40002250671387" text="ID USER" />
+                                                <TableColumn fx:id="Employee_colName" prefWidth="155.20001983642578" text="NAME" />
+                                                <TableColumn fx:id="Employee_colPhone" prefWidth="144.0" text="PHONE NUMBER" />
+                                                <TableColumn fx:id="Employee_colEmail" prefWidth="177.59994506835938" text="EMAIL" />
+                                                <TableColumn fx:id="Employee_colIDaccount" prefWidth="98.39996337890625" text="ID ACCOUNT" />
+                                                <TableColumn fx:id="Employee_colUsername" prefWidth="146.4000244140625" text="USERNAME" />
+                                             </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                       </children>
+                                    </AnchorPane>
+                                    <Label fx:id="receipt_total1" layoutX="187.0" layoutY="564.0" prefHeight="22.0" prefWidth="46.0" AnchorPane.bottomAnchor="3.6000000000000227">
+                                       <font>
+                                          <Font name="Bodoni MT Italic" size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Button fx:id="Employee_delete" layoutX="377.0" layoutY="758.0" mnemonicParsing="false" onAction="#deleteEmployee" prefHeight="29.0" prefWidth="86.0" styleClass="btn" text="DELETE" AnchorPane.bottomAnchor="11.600000000000023" AnchorPane.leftAnchor="377.0" AnchorPane.rightAnchor="378.20000000000005" />
                                  </children>
                                  <styleClass>
                                     <String fx:value="dashboarchart" />

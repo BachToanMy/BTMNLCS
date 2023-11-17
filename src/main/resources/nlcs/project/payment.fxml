@@ -8,8 +8,8 @@
 
 <AnchorPane fx:id="Product_form" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="454.0" stylesheets="@CSS/CategoryForm.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nlcs.project.Controller.ReceiptController">
     <children>
-        <Button fx:id="Cus_Sumbit" layoutX="240.0" layoutY="418.0" mnemonicParsing="false" onAction="#Pay" prefHeight="26.0" prefWidth="66.0" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Pay" />
-        <Button fx:id="Cus_cancel" layoutX="146.0" layoutY="418.0" mnemonicParsing="false" onAction="#Cancel" prefHeight="26.0" prefWidth="67.0" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Cancel" />
+        <Button fx:id="Cus_Sumbit" layoutX="252.0" layoutY="416.0" mnemonicParsing="false" onAction="#Pay" prefHeight="26.0" prefWidth="66.0" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Pay" />
+        <Button fx:id="Cus_cancel" layoutX="158.0" layoutY="416.0" mnemonicParsing="false" onAction="#Cancel" prefHeight="26.0" prefWidth="67.0" scaleX="1.2" scaleY="1.2" styleClass="btn" text="Cancel" />
       <TextField fx:id="cus_total" alignment="CENTER" layoutX="151.0" layoutY="115.0" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
       <TextField fx:id="cus_discount" alignment="CENTER" layoutX="153.0" layoutY="162.0" onAction="#discount" onInputMethodTextChanged="#discount" prefHeight="35.0" prefWidth="236.0" styleClass="field" />
       <Label layoutX="66.0" layoutY="121.0" prefHeight="22.0" prefWidth="90.0" styleClass="label1" text="Total:" />

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -26,15 +27,14 @@
             </Text>
             <FontAwesomeIconView glyphName="USER" layoutX="83.0" layoutY="188.0" size="35" text="" wrappingWidth="20.00006103515625" />
             <FontAwesomeIconView glyphName="KEY" layoutX="76.0" layoutY="258.0" size="35" text="" />
-            <TextField fx:id="signinpass_field" layoutX="119.0" layoutY="224.0" prefHeight="41.0" prefWidth="194.0" promptText="Password" styleClass="field">
+            <Hyperlink fx:id="changepassbtn" layoutX="148.0" layoutY="450.0" onAction="#switchForm" text="Change password" />
+            <Button fx:id="signinbtn" layoutX="216.0" layoutY="317.0" mnemonicParsing="false" onAction="#signin" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SIGN IN" />
+            <Button fx:id="signuptrans" layoutX="72.0" layoutY="317.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SIGN UP" />
+            <PasswordField fx:id="signinpass_field" layoutX="119.0" layoutY="226.0" prefHeight="35.0" prefWidth="194.0" promptText="Password" styleClass="field">
                <font>
                   <Font size="18.0" />
                </font>
-            </TextField>
-            <Hyperlink layoutX="148.0" layoutY="450.0" text="Forgot password" />
-            <Button fx:id="signinbtn" layoutX="216.0" layoutY="317.0" mnemonicParsing="false" onAction="#signin" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SIGN IN" />
-            <Button fx:id="signuptrans" layoutX="72.0" layoutY="317.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SIGN UP" />
-            <Button fx:id="return_btn" layoutY="474.0" mnemonicParsing="false" onAction="#returnbtn" prefHeight="17.0" prefWidth="54.0" styleClass="btn" text="Return" />
+            </PasswordField>
          </children></AnchorPane>
       <AnchorPane fx:id="signup_form" prefHeight="488.0" prefWidth="392.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -46,22 +46,9 @@
                <padding>
                   <Insets right="5.0" />
                </padding>
-            </TextField>
-            <TextField fx:id="password_field" layoutX="104.0" layoutY="279.0" prefHeight="43.0" prefWidth="194.0" promptText="Password" styleClass="field">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <padding>
-                  <Insets right="5.0" />
-               </padding>
-            </TextField>
-            <TextField fx:id="cpassword_field" layoutX="104.0" layoutY="322.0" prefHeight="43.0" prefWidth="194.0" promptText="Confirm password" styleClass="field">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <padding>
-                  <Insets right="5.0" />
-               </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </TextField>
             <TextField fx:id="phone_field" layoutX="104.0" layoutY="150.0" prefHeight="43.0" prefWidth="194.0" promptText="Phone number" styleClass="field">
                <font>
@@ -89,7 +76,46 @@
                   <Insets right="5.0" />
                </padding>
             </TextField>
-            <Button fx:id="returnbtn" layoutY="472.0" mnemonicParsing="false" onAction="#returnbtn" prefHeight="17.0" prefWidth="54.0" styleClass="btn" text="Return" />
+            <PasswordField fx:id="password_field" layoutX="104.0" layoutY="279.0" prefHeight="40.0" prefWidth="194.0" promptText="Password" styleClass="field">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </PasswordField>
+            <PasswordField fx:id="cpassword_field" layoutX="104.0" layoutY="319.0" prefHeight="26.0" prefWidth="194.0" promptText="Confirm Password" styleClass="field">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </PasswordField>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="changePass_form" layoutX="2.0" layoutY="2.0" prefHeight="496.0" prefWidth="392.0" styleClass="surface" visible="false">
+         <children>
+            <TextField fx:id="change_username" layoutX="116.0" layoutY="131.0" prefHeight="43.0" prefWidth="194.0" promptText="Username" styleClass="field">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextField>
+            <Text layoutX="73.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Change Password">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font>
+            </Text>
+            <FontAwesomeIconView glyphName="USER" layoutX="80.0" layoutY="169.0" size="35" text="" wrappingWidth="20.00006103515625" />
+            <FontAwesomeIconView glyphName="KEY" layoutX="77.0" layoutY="230.0" size="35" text="" />
+            <Button fx:id="signinbtn1" layoutX="210.0" layoutY="395.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SIGN IN" />
+            <Button fx:id="signuptrans1" layoutX="66.0" layoutY="395.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SIGN UP" />
+            <FontAwesomeIconView glyphName="KEY" layoutX="77.0" layoutY="298.0" size="35" text="" />
+            <Button fx:id="submitbtnchange" layoutX="138.0" layoutY="344.0" mnemonicParsing="false" onAction="#changePassword" prefHeight="42.0" prefWidth="115.0" styleClass="btn" text="SUBMIT" />
+            <PasswordField fx:id="change_oldpass" layoutX="116.0" layoutY="198.0" prefHeight="26.0" prefWidth="194.0" promptText="Old Password" styleClass="field">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </PasswordField>
+            <PasswordField fx:id="change_newpass" layoutX="116.0" layoutY="266.0" prefHeight="40.0" prefWidth="194.0" promptText="New Password" styleClass="field">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </PasswordField>
          </children>
       </AnchorPane>
    </children>

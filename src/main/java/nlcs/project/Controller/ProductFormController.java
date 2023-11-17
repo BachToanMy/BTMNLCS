@@ -246,9 +246,14 @@ public class ProductFormController implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText("Please fill all blank fields");
             alert.showAndWait();
-        }else {
-            String updatedata = "UPDATE product SET product_id=?" +
-                    ",product_name=?" +
+        }else if(Proform_id.getText()!=prodid) {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Can not change product id");
+            alert.showAndWait();
+        } else {
+            String updatedata = "UPDATE product SET product_name=?" +
                     ",category_id=?" +
                     ",brand_id=?" +
                     ",price_in=?" +
@@ -267,21 +272,20 @@ public class ProductFormController implements Initializable {
 
                 if(option.get().equals(ButtonType.OK)){
                     preparedStatement = connection.prepareStatement(updatedata);
-                    preparedStatement.setString(1,Proform_id.getText());
-                    preparedStatement.setString(2,Proform_name.getText());
+                    preparedStatement.setString(1,Proform_name.getText());
                     Integer index1 = Proform_category.getSelectionModel().getSelectedItem().toString().indexOf("-");
                     String category = Proform_category.getSelectionModel().getSelectedItem().toString().substring(0,index1);
-                    preparedStatement.setString(3,category);
+                    preparedStatement.setString(2,category);
                     Integer index2 = Proform_brand.getSelectionModel().getSelectedItem().toString().indexOf("-");
                     String brand = Proform_brand.getSelectionModel().getSelectedItem().toString().substring(0,index2);
-                    preparedStatement.setString(4,brand);
-                    preparedStatement.setString(5,Proform_pricein.getText());
-                    preparedStatement.setString(6,Proform_priceout.getText());
-                    preparedStatement.setString(7,Proform_stock.getText());
-                    preparedStatement.setString(8,imagepath);
-                    preparedStatement.setString(9,sqlDate.toString());
-                    preparedStatement.setString(10,Proform_note.getText());
-                    preparedStatement.setString(11,prodid);
+                    preparedStatement.setString(3,brand);
+                    preparedStatement.setString(4,Proform_pricein.getText());
+                    preparedStatement.setString(5,Proform_priceout.getText());
+                    preparedStatement.setString(6,Proform_stock.getText());
+                    preparedStatement.setString(7,imagepath);
+                    preparedStatement.setString(8,sqlDate.toString());
+                    preparedStatement.setString(9,Proform_note.getText());
+                    preparedStatement.setString(10,Proform_id.getText());
 
                     preparedStatement.executeUpdate();
 

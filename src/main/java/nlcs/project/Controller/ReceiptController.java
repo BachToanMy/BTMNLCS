@@ -2,6 +2,10 @@ package nlcs.project.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import nlcs.project.Model.Receipt;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +17,7 @@ import nlcs.project.Model.database;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 public class ReceiptController {
     @FXML
@@ -114,6 +119,27 @@ public class ReceiptController {
                 preparedStatement.setInt(2,cart_id);
                 preparedStatement.executeUpdate();
 
+                HashMap map = new HashMap();
+                map.put("getInvoice",cart_id);
+                map.put("getIdaccount",1);
+                map.put("getIdreceipt",1);
+                map.put("getTotal",total);
+                Integer discount1 = Integer.parseInt(cus_discount.getText());
+                map.put("getDiscount",discount1);
+                Double totally1 = Double.valueOf(cus_finaltotal.getText());
+                map.put("getFinaltotal",totally1);
+                Double paid = Double.parseDouble(formatter.format(Double.valueOf(cus_paid.getText())));
+                map.put("getPaid",paid);
+                Double change = Double.parseDouble(formatter.format(Double.valueOf(cus_change.getText())));
+                map.put("getChange",change);
+
+                JasperDesign jasperDesign = JRXmlLoader.load("C:\\Users\\ASUS\\JaspersoftWorkspace\\Receipt\\myInvoice.jrxml");
+                JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,map,connection);
+
+                JasperViewer.viewReport(jasperPrint,false);
+
+
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("INFORMATION MESSAGE");
                 alert.setHeaderText(null);
@@ -122,6 +148,8 @@ public class ReceiptController {
 
                 Cus_Sumbit.getScene().getWindow().hide();
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (JRException e) {
                 throw new RuntimeException(e);
             }
         }

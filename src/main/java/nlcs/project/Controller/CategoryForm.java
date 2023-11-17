@@ -143,8 +143,14 @@ public class CategoryForm {
             alert.setHeaderText(null);
             alert.setContentText("Please fill all blank fields");
             alert.showAndWait();
-        }else {
-            String updatedata = "UPDATE category SET category_id=?,category_name=?,note=? WHERE category_id=?";
+        }else if(Cateform_id.getText()!=cateid) {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Can not change category id");
+            alert.showAndWait();
+        }else{
+            String updatedata = "UPDATE category SET category_name=?,note=? WHERE category_id=?";
             try {
                 alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Error Message");
@@ -154,10 +160,9 @@ public class CategoryForm {
 
                 if(option.get().equals(ButtonType.OK)){
                     preparedStatement = connection.prepareStatement(updatedata);
-                    preparedStatement.setString(1,Cateform_id.getText());
-                    preparedStatement.setString(2,Cateform_name.getText());
-                    preparedStatement.setString(3,Cateform_note.getText());
-                    preparedStatement.setString(4,cateid);
+                    preparedStatement.setString(1,Cateform_name.getText());
+                    preparedStatement.setString(2,Cateform_note.getText());
+                    preparedStatement.setString(3,Cateform_id.getText());
                     preparedStatement.executeUpdate();
 
                     alert = new Alert(Alert.AlertType.INFORMATION);
