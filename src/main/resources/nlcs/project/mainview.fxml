@@ -13,6 +13,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -21,6 +22,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nlcs.project.Controller.Mainview">
@@ -88,7 +90,13 @@
                                     <Image url="@CSS/Images/logout.jpg" />
                                  </image>
                               </ImageView>
-                              <Button fx:id="Employee_btn" layoutX="22.0" layoutY="541.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="51.0" prefWidth="213.0" text="EMPLOYEE">
+                              <Button fx:id="Employee_btn" layoutX="22.0" layoutY="605.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="51.0" prefWidth="213.0" text="EMPLOYEE">
+                                 <styleClass>
+                                    <String fx:value="navbtn" />
+                                    <String fx:value="shadow" />
+                                 </styleClass>
+                              </Button>
+                              <Button fx:id="Message_btn" layoutX="22.0" layoutY="539.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="51.0" prefWidth="213.0" text="MESSENGER">
                                  <styleClass>
                                     <String fx:value="navbtn" />
                                     <String fx:value="shadow" />
@@ -602,7 +610,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Employee_form" prefHeight="799.2" prefWidth="842.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Employee_form" prefHeight="799.2" prefWidth="842.4" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutY="4.0" prefHeight="605.6" prefWidth="842.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
@@ -634,6 +642,30 @@
                                        </font>
                                     </Label>
                                     <Button fx:id="Employee_delete" layoutX="377.0" layoutY="758.0" mnemonicParsing="false" onAction="#deleteEmployee" prefHeight="29.0" prefWidth="86.0" styleClass="btn" text="DELETE" AnchorPane.bottomAnchor="11.600000000000023" AnchorPane.leftAnchor="377.0" AnchorPane.rightAnchor="378.20000000000005" />
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="dashboarchart" />
+                                    <String fx:value="shadow" />
+                                 </styleClass>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="Message_form" layoutX="10.0" layoutY="10.0" prefHeight="810.4" prefWidth="852.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <AnchorPane layoutX="-9.0" layoutY="-7.0" prefHeight="799.2" prefWidth="842.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="299.0" layoutY="10.0" prefHeight="32.0" prefWidth="242.0" text="MESSENGER" AnchorPane.leftAnchor="299.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="10.0">
+                                       <font>
+                                          <Font name="Bodoni MT Bold" size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <ScrollPane layoutX="100.0" layoutY="53.0" prefHeight="660.0" prefWidth="644.0" AnchorPane.bottomAnchor="86.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="53.200000000000045">
+                                       <content>
+                                          <VBox fx:id="vbox_messages" prefHeight="650.0" prefWidth="638.0" />
+                                       </content>
+                                    </ScrollPane>
+                                    <TextField fx:id="tf_message" layoutX="100.0" layoutY="738.0" prefHeight="38.0" prefWidth="535.0" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="207.0" />
+                                    <Button fx:id="button_send" layoutX="644.0" layoutY="738.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="38.0" prefWidth="97.0" text="Send" AnchorPane.bottomAnchor="22.800000000000068" AnchorPane.rightAnchor="100.0" />
                                  </children>
                                  <styleClass>
                                     <String fx:value="dashboarchart" />

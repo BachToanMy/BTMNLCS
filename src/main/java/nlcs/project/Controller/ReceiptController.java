@@ -96,6 +96,8 @@ public class ReceiptController {
     public void Pay(ActionEvent event) {
         String sql = "INSERT INTO receipt(Cart_id,total,discount,finaltotal,paid,note,date)VALUE(?,?,?,?,?,?,?)";
         String sql2 = "UPDATE cart SET Cart_status=? WHERE Cart_id=?";
+        String sql3 = "SELECT MAX(receipt_id) FROM receipt";
+        String sql4 = "SELECT idaccount FROM cart WHERE Cart_id=?";
         if(cus_discount.getText()==null||cus_paid.getText()==null){
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR MESSAGE");
@@ -118,11 +120,24 @@ public class ReceiptController {
                 preparedStatement.setInt(1,1);
                 preparedStatement.setInt(2,cart_id);
                 preparedStatement.executeUpdate();
+                int rcpid=0;
+                int ida=0;
+                preparedStatement = connection.prepareStatement(sql3);
+                result=preparedStatement.executeQuery();
+                if(result.next()){
+                    rcpid = result.getInt("MAX(receipt_id)");
+                }
+                preparedStatement = connection.prepareStatement(sql4);
+                preparedStatement.setInt(1,cart_id);
+                result=preparedStatement.executeQuery();
+                if(result.next()){
+                    ida = result.getInt("idaccount");
+                }
 
                 HashMap map = new HashMap();
                 map.put("getInvoice",cart_id);
-                map.put("getIdaccount",1);
-                map.put("getIdreceipt",1);
+                map.put("getIdaccount",ida);
+                map.put("getIdreceipt",rcpid);
                 map.put("getTotal",total);
                 Integer discount1 = Integer.parseInt(cus_discount.getText());
                 map.put("getDiscount",discount1);

@@ -1,5 +1,7 @@
 package nlcs.project.Controller;
 
+import com.rabbitmq.client.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
@@ -19,14 +22,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import nlcs.project.Application;
 import nlcs.project.Model.*;
 import nlcs.project.Model.Receipt;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
@@ -34,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
 
 public class Mainview implements Initializable {
     @FXML
@@ -657,7 +668,7 @@ public class Mainview implements Initializable {
             }
         }
     }
-
+    @FXML private AnchorPane Message_form;
 
     @FXML
     private AnchorPane dashboard_form;
@@ -679,6 +690,7 @@ public class Mainview implements Initializable {
     @FXML
     private Button Category_btn;
     @FXML private Button Receipt_btn;
+    @FXML private Button Message_btn;
     @FXML
     private Button cart_btn;
 
@@ -690,7 +702,10 @@ public class Mainview implements Initializable {
         Cart_form.setVisible(false);
         dashboard_form.setVisible(false);
         Receipt_form.setVisible(false);
+        Message_form.setVisible(false);
+
     }
+
 
     public void switchForm(ActionEvent event) throws IOException {
 
@@ -724,7 +739,10 @@ public class Mainview implements Initializable {
             setFalseVisible();
             Employee_form.setVisible(true);
             EmployeeShowData();
-        } else {
+        } else if (event.getSource()==Message_btn){
+            setFalseVisible();
+            Message_form.setVisible(true);
+        }else {
             setFalseVisible();
             Cart_form.setVisible(true);
             CartShowData();
@@ -1223,7 +1241,7 @@ public class Mainview implements Initializable {
         Employee_table.setItems(listData);
     }
 
-    public void deleteEmployee(){
+    public void deleteEmployee() {
         User user = Employee_table.getSelectionModel().getSelectedItem();
         if (user == null) {
             alert = new Alert(Alert.AlertType.ERROR);
@@ -1231,7 +1249,13 @@ public class Mainview implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText("Please choose user to delete!");
             alert.showAndWait();
-        } else {
+        }else if (user.getUsername()==username){
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Message");
+            alert.setHeaderText(null);
+            alert.setContentText("This account is now in use !");
+            alert.showAndWait();
+        }else {
             Integer id = user.getIduser();
             Integer ida = user.getIdaccount();
             alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -1294,10 +1318,96 @@ public class Mainview implements Initializable {
             throw new RuntimeException(e);
         }
     }
+    //////////////////////////////////////////////////////MESSAGE//////////////////////////////////
+    @FXML
+    private TextField tf_message;
+
+    @FXML
+    private VBox vbox_messages;
+    private final String EXCHANGE_NAME = "chat_exchange";
+    public void setupRabbitMQ() {
+        try {
+            // Create a connection to the RabbitMQ server
+            String uri = "amqps://mzpobwns:bdzM0RTd81CrR8QACyzFtvVzuajHxP6x@moose.rmq.cloudamqp.com/mzpobwns";
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setUri(uri);
+            com.rabbitmq.client.Connection connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+            // Declare a fanout exchange for broadcasting messages to all clients
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
+            // Declare a queue for this client
+            String queueName = channel.queueDeclare().getQueue();
+            // Bind the queue to the exchange
+            channel.queueBind(queueName, EXCHANGE_NAME, "");
+            // Set up a consumer to receive messages
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(message.substring(0,message.indexOf(" ")));
+                if(message.substring(0,message.indexOf(":")).equals(username)){
+                }else {
+                    HBox hBox = new HBox();
+                    hBox.setAlignment(Pos.CENTER_LEFT);
+                    Text text = new Text(message);
+                    TextFlow textFlow = new TextFlow(text);
+                    hBox.getChildren().add(textFlow);
+                    Platform.runLater(() -> vbox_messages.getChildren().add(hBox));
+                }
+
+            };
+            // Start consuming messages
+            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
+            });
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public int sendMessage() {
+        String message = username+": "+tf_message.getText();
+        if (!message.isEmpty()) {
+            try {
+                // Send the message to the exchange (broadcast to all clients)
+                String uri = "amqps://mzpobwns:bdzM0RTd81CrR8QACyzFtvVzuajHxP6x@moose.rmq.cloudamqp.com/mzpobwns";
+                ConnectionFactory factory = new ConnectionFactory();
+                factory.setUri(uri);
+                try (com.rabbitmq.client.Connection connection = factory.newConnection()) {
+                    Channel channel = connection.createChannel();
+                    HBox hBox = new HBox();
+                    hBox.setAlignment(Pos.CENTER_RIGHT);
+                    Text text = new Text(message);
+                    TextFlow textFlow = new TextFlow(text);
+                    hBox.getChildren().add(textFlow);
+                    vbox_messages.getChildren().add(hBox);
+                    channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes(StandardCharsets.UTF_8));
+                }
+                tf_message.clear();
+            } catch (IOException | TimeoutException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            } catch (KeyManagementException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return 1;
+    }
+    public void setuprabbit(){
+        Thread rabbitThread = new Thread(this::setupRabbitMQ);
+        rabbitThread.setDaemon(true);
+        rabbitThread.start();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setFalseVisible();
+        setuprabbit();
         dashboard_form.setVisible(true);
         dashboard_datepicker.setValue(sqlDate.toLocalDate());
         daily();

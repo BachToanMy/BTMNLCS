@@ -4,6 +4,8 @@ module nlcs.project {
     requires java.sql;
     requires org.apache.commons.codec;
     requires jasperreports;
+    requires org.slf4j;
+    requires com.rabbitmq.client;
 
 
     opens nlcs.project to javafx.fxml;

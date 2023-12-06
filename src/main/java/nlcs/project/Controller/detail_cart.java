@@ -250,7 +250,6 @@ public class detail_cart {
                         soluong=0;
                 }else{
                         soluong = Integer.parseInt(item_quantity.getText());
-
                 }
                 int quantity = 0;
                 String getquantity = "SELECT * FROM detail_cart WHERE product_id=? AND Cart_id=?";
@@ -263,18 +262,12 @@ public class detail_cart {
                         if(result.next()){
                                 quantity = result.getInt("quantity");
                         }
-                        preparedStatement = connection.prepareStatement(checkStock);
-                        preparedStatement.setString(1, prodid);
-                        result = preparedStatement.executeQuery();
-                        if (result.next()) {
-                                checkstk = result.getInt("stock");
-                                if (checkstk < soluong-quantity) {
-                                        alert = new Alert(Alert.AlertType.ERROR);
-                                        alert.setTitle("Error Message");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Product is out of stock");
-                                        alert.showAndWait();
-                                } else {
+                        if(soluong <= quantity){
+                                preparedStatement = connection.prepareStatement(checkStock);
+                                preparedStatement.setString(1, prodid);
+                                result = preparedStatement.executeQuery();
+                                if (result.next()) {
+                                        checkstk = result.getInt("stock");
                                         String sql = "UPDATE detail_cart SET quantity=?,price=? WHERE product_id = ? AND Cart_id=?";
                                         preparedStatement = connection.prepareStatement(sql);
                                         preparedStatement.setInt(1, soluong);
@@ -284,12 +277,40 @@ public class detail_cart {
                                         preparedStatement.executeUpdate();
                                         String sql2 = "UPDATE product SET stock=? WHERE product_id=?";
                                         preparedStatement = connection.prepareStatement(sql2);
-                                        preparedStatement.setInt(1, checkstk - (soluong-quantity));
+                                        preparedStatement.setInt(1, checkstk + (quantity-soluong));
                                         preparedStatement.setString(2, prodid);
                                         preparedStatement.executeUpdate();
+                                }
+                        }else{
+                                preparedStatement = connection.prepareStatement(checkStock);
+                                preparedStatement.setString(1, prodid);
+                                result = preparedStatement.executeQuery();
+                                if (result.next()) {
+                                        checkstk = result.getInt("stock");
+                                        if (checkstk < soluong-quantity) {
+                                                alert = new Alert(Alert.AlertType.ERROR);
+                                                alert.setTitle("Error Message");
+                                                alert.setHeaderText(null);
+                                                alert.setContentText("Product is out of stock");
+                                                alert.showAndWait();
+                                        } else {
+                                                String sql = "UPDATE detail_cart SET quantity=?,price=? WHERE product_id = ? AND Cart_id=?";
+                                                preparedStatement = connection.prepareStatement(sql);
+                                                preparedStatement.setInt(1, soluong);
+                                                preparedStatement.setDouble(2, soluong * price_out);
+                                                preparedStatement.setString(3, prodid);
+                                                preparedStatement.setInt(4, cartid);
+                                                preparedStatement.executeUpdate();
+                                                String sql2 = "UPDATE product SET stock=? WHERE product_id=?";
+                                                preparedStatement = connection.prepareStatement(sql2);
+                                                preparedStatement.setInt(1, checkstk - (soluong-quantity));
+                                                preparedStatement.setString(2, prodid);
+                                                preparedStatement.executeUpdate();
 
+                                        }
                                 }
                         }
+
                 } catch (SQLException e) {
                         throw new RuntimeException(e);
 

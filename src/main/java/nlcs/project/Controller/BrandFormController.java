@@ -137,7 +137,7 @@ public class BrandFormController {
             alert.setHeaderText(null);
             alert.setContentText("Please fill all blank fields");
             alert.showAndWait();
-        }else if(Brandform_id.getText()!=brandid) {
+        }else if(!Brandform_id.getText().equals(brandid)) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Message");
             alert.setHeaderText(null);
